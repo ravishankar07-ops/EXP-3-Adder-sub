@@ -18,10 +18,68 @@ half_add_sub.v	Arithmetic-circuit RTL
 half_add_sub_tb.v	Stimulus and VCD generation
 
 ### Verilog Program
-```
-```
-### Testbench Program
+module half_adder (
+    input wire A,
+    input wire B,
+    output wire Sum,
+    output wire Carry
+);
+    assign Sum   = A ^ B;
+    assign Carry = A & B;
+endmodule
 
+module half_subtractor (
+    input wire A,
+    input wire B,
+    output wire Diff,
+    output wire Borrow
+);
+    assign Diff   = A ^ B;
+    assign Borrow = (~A) & B;
+endmodule
+
+### Testbench Program
+module tb3;
+    reg A, B;
+    wire Sum, Carry;
+    wire Diff, Borrow;
+
+    // Instantiate the Half Adder
+    half_adder ha_uut (
+        .A(A),
+        .B(B),
+        .Sum(Sum),
+        .Carry(Carry)
+    );
+
+    // Instantiate the Half Subtractor
+    half_subtractor hs_uut (
+        .A(A),
+        .B(B),
+        .Diff(Diff),
+        .Borrow(Borrow)
+    );
+
+    initial begin
+        // VCD dump setup
+        $dumpfile("half_add_sub.vcd");
+        $dumpvars(0, tb3);
+
+        // Display outputs
+        $monitor(
+            "Time=%0t A=%b B=%b | Sum=%b Carry=%b | Diff=%b Borrow=%b",
+            $time, A, B, Sum, Carry, Diff, Borrow
+        );
+
+        // Apply all input combinations
+        A = 0; B = 0; #10;
+        A = 0; B = 1; #10;
+        A = 1; B = 0; #10;
+        A = 1; B = 1; #10;
+
+        #10 $finish;
+    end
+endmodule
 
 ### Truth Table
 
@@ -84,6 +142,8 @@ The Half Adder and Half Subtractor were realized using Verilog HDL:
 The design was compiled and simulated using Synopsys VCS, and the functionality was verified using DVE waveform analysis, matching the expected truth table.
 
 ### Output
+<img width="1917" height="1078" alt="Screenshot 2026-10-22 090457" src="https://github.com/user-attachments/assets/7aeea354-de2a-4574-abe2-9f0103c9e29c" />
+<img width="1917" height="1072" alt="Screenshot 2026-10-22 090632" src="https://github.com/user-attachments/assets/3c464f14-5a2a-4ac5-b99c-aeb9afb1cde9" />
 
 
 ### Viva-Voce Questions
